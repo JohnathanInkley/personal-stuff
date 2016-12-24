@@ -1,0 +1,80 @@
+- MUD game with users -
+
+Features we'd need (high level)
+- Users
+- Map and rooms
+- Monsters
+- Items
+- Battle facility
+- Trading facility
+- Log on/off features
+- Graphics/interface
+(and maybe)
+- Quests
+
+---- In depth descriptions ----
+
+-- Users --
+Users need several different design features:
+1) A way to move around map and intiate interaction with objects
+2) A collection of attributes and a way of advancing these
+3) A personal inventory of items and money, and a way of adding/removing these
+4) A way of accessing trading facility.
+5) A way of accessing battle facility.
+6) A way of sending messages to other users - i.e. to discuss possible trades or alliances etc.
+
+-- Map and rooms --
+The game map would probably be composed of different rooms. Features for this would include
+1) A way to load/create the map and rooms initially
+2) A way for certain locations in room to have objects there, and spawn them
+
+-- Monsters --
+Monsters could be treated several ways:
+1) Like users, but with moves randomly chosen at each step
+2) Randomly spawning at certain locations when a user is there
+In the case of 2), monsters would still need attributes/items etc and know how to fight
+
+-- Items --
+Items would fall into different subclasses. Broadly they would be:
+1) In-battle items - Weapons/Shields/Armour etc
+2) Out-of-battle items - money, maps, notes, trinkets etc
+3) General items - healing potions etc
+
+For each of these there are type specific considerations:
+1) In-battle items need to have data that players fighting mechanisms can use to determine
+   relative move strengths etc. Also need meessages that describe the action in battle if used
+2) Out-of-battle items would properties that link them to quests
+
+All items would need to have a value (in the case of selling them) and a description that can be
+accessed fro the users inventory menu to inform them of it's use/effects/lore etc.
+
+-- Battle facility --
+- A battle facility would need mechanics to accept two characters (user or monster) that prompts
+the character to supply moves etc.
+- It would need a user interface that is presented to screen and allows user thread to interact with system.
+- It would need a turn based system, tracking who's move it is.
+- When the user selects a move, the users battle facilities calculate damage etc and supply data to battle system.
+  Therefore in reality, facility should merely facilitate turn based activity and a way to pass messages between the two
+  characters battle systems, and display this to screen
+
+-- Trading facility --
+- Similar to battle system.
+- Should accept 2 users who wish to trader and facilitate message passing between them.
+- Should be turn based: First user can select item they wish to trade and a price.
+  	    	 	Second user can accept or offer a different price.
+			First user can accept or offer a....
+- Should be able to call user functions that relenquish items/gold and accept items/gold
+
+-- Log on/off facility --
+- This would be the first process initiated when a user connects to game server.
+- Would prompt user for username and password.
+- Searches database of all usernames and password and if finds match, creates player thread
+- Else can create new account.
+- Either way, creates a thread for the user and their playing begins
+
+-- Graphics facility --
+- This would be directly what the user would see at any moment in time
+- Should access map which is stored in memory somehow
+- Based on what's in each position, certain graphics are drawn.
+- Always renders what is around user, say a 50x50 grid with user at centre
+- Displays on RHS maybe player stats - health, level, items etc

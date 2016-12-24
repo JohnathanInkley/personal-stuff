@@ -1,0 +1,4 @@
+Immediate
+1) Read TELNET messages of MUD on local server with colourings - MUDLET
+2) Get color formatted hello world - it connects and sees hello world
+3) Can disconnect and connect and see message again - new thread each time

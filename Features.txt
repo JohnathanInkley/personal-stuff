@@ -1,0 +1,185 @@
+---- 4.1 Player class
+
+- 4.1.1 Description and priority
+This feature is the class of Player. It is an object that interfaces with all parts of the game.
+It is a high priority feature. It holds a user's personal attributes, and inventory.
+It also contains methods that allow the user to modify these through gameplay
+
+- 4.1.2 Stimulus/response sequences and features
+Stimulus: User sends a valid log on request
+Resonse: Player class is instantiated with default or saved attributes
+
+Stimulus: User chooses to log off
+Response: The attributes of the Player are saved to a database for future loading
+
+Stimulus: User chooses to move around (U/D/L/R)
+Response: The Player checks with the map whether the move is valid.
+	  If so, collects any items, updates location, and checks for any monsters
+
+Stimulus: User chooses to interact with another object
+Response: Player calls interact function of the object. Player then given list of available
+	  options for the chosen object awhich the user chooses one of
+
+Stimulus: User chooses to trade with another Player
+Response: Trading feature is called for the two parties and attributes/inventory is updated.
+
+Stimulus: User begins a battle with another Player or a monster
+Response: Battle feature is called
+
+Stimulus: Battle feature asks for list of moves player has
+Response: Player returns a list of valid moves to the battle feature for display
+
+Stimulus: Battle feature gets message from user to carry out a certain move
+Response: The Player calculates damage etc done and returns to battle feature, and updates stats
+
+Stimulus: Battle featue tells user that damage has been inflicted
+Response: The Player updates HP and other stats. Then checks if player has died and informs battle
+
+Stimulus: User chooses to equip or use an item
+Response: The Player stats are updated to reflect this use or equipment
+
+
+---- 4.2 Log on facility
+
+- 4.2.1 Description and priority
+The game requires a log on screen where a user is prompted to enter a username and password
+or create an account. Upon successful actions by user, a Player object is created.
+This feature is low priority and dummy features can be used at first to test game
+
+- 4.2.2 Stimulus/response sequences and features
+Stimulus: User connects to server and log on facility called
+Response: New log on form appears for user to use
+
+Stimulus: User enters username and password
+Response: Database of accounts is searched and if matching account is found, a Player is made
+	  If match no found, user told to try again or create an account
+
+Stimulus: User chooses to create account
+Response: User is prompted to choose username and password, and username is checked if unique
+	  If so, new Player class is created and a database entry is made for new user
+	  If not, user asked to try again
+
+---- 4.3 Maps and rooms
+
+- 4.3.1 Description and priority
+The game has a map that consists of squares that objects (players, items etc) can occupy.
+The graphics feature calls on the map to produce the squares on the screen. The user then
+looks at this when deciding what actions to take when playing. The map may consist of seperate
+rooms that are distinct, with 'doors' between them. This is a high priority feature
+
+- 4.3.2 Stimulus/response sequences and features
+Stimulus: Game first initiated on host server
+Response: The map template given to the Map feature is used to generate the map
+
+Stimulus: Game tells map to create a new object in a given location
+Response: Map takes the reference for a given object and stores it in a vector of objects that
+	  are simultaneously at a location.
+
+Stimulus: Player attempts to move to a given location and informs map of this
+Response: Map checks whether the location is valid (in the map)
+	  If the move is valid, the game then checks whether there is any object already there
+	  If there isn't, or the objects already there can simultaneously hold an object, the
+	  Player is stored as being in new location and a message is passed to Player to tell them
+
+Stimulus: Player attempts to use an item in their location at a given location (say a shovel)
+Response: Map checks if any of the items at the given spot can interface with the used item
+
+Stimulus: Player attempts to interact with an object at a neighboring square
+Response: Map checks primary object at that square and calls it's interact function
+
+---- 4.4 Monsters
+
+- 4.4.1 Description and priority
+The game requires monsters that appear at random points as a way to allow users to 'train'.
+These monsters have stats similar to Players, but are non playable. They can carry items that
+will be dropped when the user kills them. They are a medium priority feature
+
+- 4.4.2 Stimulus/response sequences and features
+Stimulus: Game calls for creation of new Monster in a given location
+Response: A monster is initialised with a given set attributes. Several types will be specified
+	  in an input file that is read into the game.
+
+Stimulus: A user attempts interact with a Monster (by moving to same square)
+Response: Battle facility is called
+
+Stimulus: Battle facility prompts Monster for a move
+Response: Monster chooses move randomly, but with some weighting based on HP etc.
+
+Stimulus: Battle facility gives Monster damage from Players move
+Response: Monster updates it's own stats accordingly. If HP = 0, battle recieves termination signal
+
+Stimulus: Monster has been killed in battle
+Response: Monster passes the refereneces to it's items to the Map and they appear on floor
+
+---- 4.5 Items
+
+- 4.5.1 Description and priority
+The game requires items that can aid the player in a number of ways. They can either be single use
+or multiple use. They can be for in battle only or for use at any time (e.g. health potion).
+They can be weapons or armour that can be equipped. They are a medium priority feature
+
+- 4.5.2 Stimulus/response sequences and features
+Stimulus: Item is interacted with
+Response: Item presents list of possible functions/features the caller can choose from
+	  Upon recieving a choice, the feature is carried out
+
+Stimulus: Item is created by game in random place
+Response: Item is instantiated as a subclass of the overall Item class based on what it is
+
+Stimulus: Trading feature attempts to value item (e.g. an in game shop)
+Response: Item returns it's price to the caller, if one is present
+
+Stimulus: Item is obtained by a player
+Response: Item updates it's ownership variable
+
+---- 4.6 Battle facility
+
+- 4.6.1 Description and priority
+The game required the ability to allow Players or Monsters to battle. It will be a turn based
+battling system where each player chooses a move in turn and the moves are carried out in order.
+The moves themselves and the damage the inflict etc are generated by the characters battling.
+Therefore the battle facility merely prompts the characters to initiate a move selection feature
+that generates the damage etc commited. The battle facility then passes these data to the opponent.
+This is a high priority feature.
+
+- 4.6.2 Stimulus/response sequences and features
+Stimulus: Battle is initiated between two characters
+Response: A new Battle is created containing the two characters, that prompts the users in turn
+	  to provide "damage" etc data to pass to opponent. It then passes this to the opponent.
+	  After a move, it informs the players how much damage is inflicted etc.
+	  Battle proclaims winner when a "death signal" is recieved from one of the characters
+	  
+---- 4.7 Trading facility
+
+- 4.7.1 Description and priority
+The game requres players to have the ability to trade items. A simple method would be for the
+Player initiating the trade to select the item they wish to trade. The other Player then can
+choose either an item of their own, or an amount of gold they hold. The first player then chooses
+whether to accept or not. This is a high priority feature.
+
+- 4.7.2 Stimulus/response sequences and features
+Stimulus: User initiates trade
+Response: A new trade is created containing the two characters. The first character is then
+	  prompted for an item they wish to trade.
+
+Stimulus: First user provides an item they wish to trade
+Response: Trading facility tells other user then name of this item and asks for what they wish to
+	  trade for it in return - either an amount of gold, or another item
+
+Stimulus: Trading facility receives what the second user would wish to trade for the first user's
+	  item
+Response: Trading facility prompts first user to accept the trade or decline. If the trade is
+	  accepted, the facility facilitates the two parties' belongings to swap
+
+
+---- 4.8 Graphics facility
+
+- 4.8.1 Description and priority
+The game requires a graphics facility that shows the user on screen moving around the map. It also
+allows the user to check their inventory and see what they have, and call the member functions that
+manipulate it. It also allows them to find objects (either other players or items) to interact with
+This is a very high priority feature.
+
+- 4.8.2 Stimulus/response sequences and features
+
+
